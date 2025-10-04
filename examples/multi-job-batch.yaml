@@ -1,0 +1,89 @@
+# Multiple training jobs to test scheduling policies
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: job-high-priority-1
+  labels:
+    user: team-a
+    priority: high
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py", "--duration=60", "--job-name=high-priority-1"]
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+      limits:
+        nvidia.com/gpu: 1
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: job-medium-priority-1
+  labels:
+    user: team-b
+    priority: medium
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py", "--duration=90", "--job-name=medium-priority-1"]
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+      limits:
+        nvidia.com/gpu: 1
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: job-low-priority-1
+  labels:
+    user: team-c
+    priority: low
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py", "--duration=120", "--job-name=low-priority-1"]
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+      limits:
+        nvidia.com/gpu: 1
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: job-low-priority-2
+  labels:
+    user: team-c
+    priority: low
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py", "--duration=120", "--job-name=low-priority-2"]
+    resources:
+      requests:
+        nvidia.com/gpu: 2
+      limits:
+        nvidia.com/gpu: 2
+

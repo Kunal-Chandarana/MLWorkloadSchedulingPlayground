@@ -1,0 +1,33 @@
+# Simple PyTorch Training Job
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-training-simple
+  labels:
+    app: pytorch-training
+    user: team-a
+    priority: medium
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py"]
+    args:
+      - "--duration=120"
+      - "--model-size=medium"
+      - "--batch-size=64"
+      - "--job-name=pytorch-simple"
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+        memory: "4Gi"
+        cpu: "2"
+      limits:
+        nvidia.com/gpu: 1
+        memory: "4Gi"
+        cpu: "2"
+

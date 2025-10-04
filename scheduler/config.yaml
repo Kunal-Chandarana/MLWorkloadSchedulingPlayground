@@ -1,0 +1,29 @@
+# GPU Scheduler Configuration
+
+scheduler:
+  name: "gpu-scheduler"
+  policy: "fifo"  # Options: fifo, priority, fair_share, gang
+  preemption_enabled: false
+  checkpoint_interval: 300  # seconds
+
+monitoring:
+  enabled: true
+  metrics_port: 8080
+
+policies:
+  priority:
+    classes:
+      high: 1000
+      medium: 500
+      low: 100
+  
+  fair_share:
+    weights:
+      team-a: 2.0
+      team-b: 1.5
+      team-c: 1.0
+      default: 1.0
+  
+  gang:
+    timeout: 300  # seconds
+

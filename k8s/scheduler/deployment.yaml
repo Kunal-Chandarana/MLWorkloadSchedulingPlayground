@@ -1,0 +1,147 @@
+# Custom GPU Scheduler Deployment
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scheduler-system
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gpu-scheduler
+  namespace: scheduler-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gpu-scheduler
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/binding"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods/status"]
+  verbs: ["patch", "update"]
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+- apiGroups: ["scheduling.k8s.io"]
+  resources: ["priorityclasses"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gpu-scheduler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gpu-scheduler
+subjects:
+- kind: ServiceAccount
+  name: gpu-scheduler
+  namespace: scheduler-system
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scheduler-config
+  namespace: scheduler-system
+data:
+  config.yaml: |
+    scheduler:
+      name: "gpu-scheduler"
+      policy: "fifo"
+      preemption_enabled: false
+      checkpoint_interval: 300
+    
+    monitoring:
+      enabled: true
+      metrics_port: 8080
+    
+    policies:
+      priority:
+        classes:
+          high: 1000
+          medium: 500
+          low: 100
+      
+      fair_share:
+        weights:
+          team-a: 2.0
+          team-b: 1.5
+          team-c: 1.0
+          default: 1.0
+      
+      gang:
+        timeout: 300
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-scheduler
+  namespace: scheduler-system
+  labels:
+    app: gpu-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpu-scheduler
+  template:
+    metadata:
+      labels:
+        app: gpu-scheduler
+    spec:
+      serviceAccountName: gpu-scheduler
+      containers:
+      - name: scheduler
+        image: gpu-scheduler:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: metrics
+        volumeMounts:
+        - name: config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      volumes:
+      - name: config
+        configMap:
+          name: scheduler-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpu-scheduler-metrics
+  namespace: scheduler-system
+  labels:
+    app: gpu-scheduler
+spec:
+  selector:
+    app: gpu-scheduler
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: metrics
+  type: ClusterIP
+
