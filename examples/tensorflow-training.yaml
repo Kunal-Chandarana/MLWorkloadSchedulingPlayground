@@ -1,0 +1,33 @@
+# Simple TensorFlow Training Job
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tensorflow-training-simple
+  labels:
+    app: tensorflow-training
+    user: team-b
+    priority: low
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: tensorflow-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "simple-training.py"]
+    args:
+      - "--duration=120"
+      - "--model-size=medium"
+      - "--batch-size=32"
+      - "--job-name=tensorflow-simple"
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+        memory: "4Gi"
+        cpu: "2"
+      limits:
+        nvidia.com/gpu: 1
+        memory: "4Gi"
+        cpu: "2"
+

@@ -1,0 +1,28 @@
+# Kind cluster configuration with simulated GPU nodes
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: gpu-scheduler-cluster
+nodes:
+  # Control plane
+  - role: control-plane
+  
+  # Worker nodes with "simulated" GPUs
+  # (We'll use labels to simulate different GPU configurations)
+  - role: worker
+    labels:
+      node-type: gpu-node
+      gpu-count: "2"
+      gpu-type: nvidia-tesla-t4
+  
+  - role: worker
+    labels:
+      node-type: gpu-node
+      gpu-count: "4"
+      gpu-type: nvidia-a100
+  
+  - role: worker
+    labels:
+      node-type: gpu-node
+      gpu-count: "2"
+      gpu-type: nvidia-tesla-t4
+

@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Kubernetes
+*.kubeconfig
+kubeconfig
+
+# Temporary files
+/tmp/
+*.tmp
+*.log
+
+# Docker
+.dockerignore
+
+# macOS
+.DS_Store
+
+# Experiment outputs
+experiments/results/
+experiments/logs/
+*.pkl
+*.pth
+*.h5
+

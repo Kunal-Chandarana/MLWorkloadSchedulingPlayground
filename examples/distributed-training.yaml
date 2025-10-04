@@ -1,0 +1,146 @@
+# Distributed PyTorch Training Job (Gang Scheduling)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pytorch-distributed-master
+spec:
+  clusterIP: None
+  selector:
+    job: pytorch-distributed
+    role: master
+  ports:
+  - port: 29500
+    name: dist
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-distributed-master
+  labels:
+    job: pytorch-distributed
+    role: master
+    user: team-a
+    gang.scheduling.k8s.io/name: pytorch-distributed-gang
+  annotations:
+    gang.scheduling.k8s.io/min-members: "3"
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  hostname: master
+  subdomain: pytorch-distributed-master
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "distributed-training.py"]
+    args:
+      - "--duration=180"
+      - "--model-size=large"
+      - "--batch-size=128"
+    env:
+    - name: MASTER_ADDR
+      value: "master.pytorch-distributed-master"
+    - name: MASTER_PORT
+      value: "29500"
+    - name: WORLD_SIZE
+      value: "3"
+    - name: RANK
+      value: "0"
+    resources:
+      requests:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+      limits:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-distributed-worker-1
+  labels:
+    job: pytorch-distributed
+    role: worker
+    user: team-a
+    gang.scheduling.k8s.io/name: pytorch-distributed-gang
+  annotations:
+    gang.scheduling.k8s.io/min-members: "3"
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "distributed-training.py"]
+    args:
+      - "--duration=180"
+      - "--model-size=large"
+      - "--batch-size=128"
+    env:
+    - name: MASTER_ADDR
+      value: "master.pytorch-distributed-master"
+    - name: MASTER_PORT
+      value: "29500"
+    - name: WORLD_SIZE
+      value: "3"
+    - name: RANK
+      value: "1"
+    resources:
+      requests:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+      limits:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-distributed-worker-2
+  labels:
+    job: pytorch-distributed
+    role: worker
+    user: team-a
+    gang.scheduling.k8s.io/name: pytorch-distributed-gang
+  annotations:
+    gang.scheduling.k8s.io/min-members: "3"
+spec:
+  schedulerName: gpu-scheduler
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: pytorch-training:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python", "distributed-training.py"]
+    args:
+      - "--duration=180"
+      - "--model-size=large"
+      - "--batch-size=128"
+    env:
+    - name: MASTER_ADDR
+      value: "master.pytorch-distributed-master"
+    - name: MASTER_PORT
+      value: "29500"
+    - name: WORLD_SIZE
+      value: "3"
+    - name: RANK
+      value: "2"
+    resources:
+      requests:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+      limits:
+        nvidia.com/gpu: 2
+        memory: "8Gi"
+        cpu: "4"
+
