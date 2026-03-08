@@ -2,7 +2,7 @@
 
 A comprehensive playground for learning and experimenting with machine learning workload scheduling on GPU clusters using Kubernetes.
 
-## 🎯 What You'll Learn
+## What You'll Learn
 
 - Custom Kubernetes scheduler implementation
 - GPU resource management and allocation
@@ -12,7 +12,7 @@ A comprehensive playground for learning and experimenting with machine learning 
 - Performance metrics and monitoring
 - Container orchestration for ML workloads
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -38,7 +38,7 @@ A comprehensive playground for learning and experimenting with machine learning 
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 - **Docker Desktop** (or Docker Engine)
 - **kubectl** (Kubernetes CLI)
@@ -46,7 +46,7 @@ A comprehensive playground for learning and experimenting with machine learning 
 - **Python 3.9+**
 - **Helm** (optional, for monitoring stack)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Set Up the Cluster
 
@@ -91,7 +91,7 @@ kubectl apply -f examples/distributed-training.yaml
 ./scripts/start-dashboard.sh
 ```
 
-## 📚 Project Structure
+## Project Structure
 
 ```
 .
@@ -118,7 +118,7 @@ kubectl apply -f examples/distributed-training.yaml
 └── docs/                      # Detailed documentation
 ```
 
-## 🎓 Learning Path
+## Learning Path
 
 ### Phase 1: Basics
 1. Start the cluster and explore nodes
@@ -138,7 +138,7 @@ kubectl apply -f examples/distributed-training.yaml
 3. Optimize for different objectives (utilization, fairness, latency)
 4. Compare scheduling policies
 
-## 🧪 Example Experiments
+## Example Experiments
 
 Run pre-built experiments to see different scheduling behaviors:
 
@@ -156,7 +156,7 @@ python experiments/multi_tenant.py
 python experiments/benchmark.py
 ```
 
-## 📊 Key Metrics
+## Key Metrics
 
 The scheduler tracks and exposes:
 - **GPU Utilization**: % of GPU time used
@@ -166,7 +166,7 @@ The scheduler tracks and exposes:
 - **Fairness Metrics**: Resource distribution across users/teams
 - **Fragmentation**: Wasted GPU resources
 
-## 🔧 Configuration
+## Configuration
 
 Edit `scheduler/config.yaml` to customize:
 
@@ -185,7 +185,7 @@ monitoring:
   metrics_port: 8080
 ```
 
-## 🤝 Contributing
+## Contributing
 
 This is a learning playground! Feel free to:
 - Add new scheduling policies
@@ -193,14 +193,14 @@ This is a learning playground! Feel free to:
 - Improve monitoring and visualization
 - Add documentation and tutorials
 
-## 📖 Additional Resources
+## Additional Resources
 
 - [Kubernetes Scheduler Overview](docs/kubernetes-scheduler.md)
 - [GPU Scheduling Patterns](docs/gpu-scheduling-patterns.md)
 - [ML Workload Characteristics](docs/ml-workloads.md)
 - [Troubleshooting Guide](docs/troubleshooting.md)
 
-## 🏆 Challenges
+## hallenges
 
 Try these challenges to deepen your learning:
 1. Implement a custom scoring function for node selection
@@ -209,10 +209,8 @@ Try these challenges to deepen your learning:
 4. Create a scheduler that learns from past jobs (ML-based)
 5. Implement auto-scaling based on queue length
 
-## 📝 License
+## License
 
 MIT License - Feel free to use this for learning and experimentation!
 
 ---
-
-**Happy Learning! 🚀🎓**
